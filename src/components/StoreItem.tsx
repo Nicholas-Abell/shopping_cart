@@ -1,4 +1,5 @@
 import { Button, Card } from 'react-bootstrap';
+import { useShoppingCart } from '../context/shoppingCartContext';
 
 import { formatCurrency } from '../utils/formatCurrency';
 
@@ -10,7 +11,9 @@ type StoreItemProps = {
 }
 
 const StoreItem = ({ id, name, price, img }: StoreItemProps) => {
-    const quantity = 2;
+    const { getItemQuantity, increaseQuantity, decreaseQuantity, removeFromCart } = useShoppingCart();
+    const quantity = getItemQuantity(id);
+
     return (
         <Card className='h-100'>
             <Card.Img
@@ -26,21 +29,21 @@ const StoreItem = ({ id, name, price, img }: StoreItemProps) => {
                 </Card.Title>
                 <div className='mt-auto'>
                     {quantity === 0
-                        ? <Button className='w-100'>Add to Cart</Button>
+                        ? <Button onClick={() => increaseQuantity(id)} className='w-100'>Add to Cart</Button>
                         : <div className='d-flex align-items-center 
                         flex-column' style={{ gap: '.5rem' }}
                         >
                             <div className='d-flex align-items-center 
                             justify-content-center' style={{ gap: '.5rem' }}
                             >
-                                <Button>-</Button>
+                                <Button onClick={() => decreaseQuantity(id)}>-</Button>
                                 <div>
                                     <span className='fs-3'>{quantity}</span>
                                     in cart
                                 </div>
-                                <Button>+</Button>
+                                <Button onClick={() => increaseQuantity(id)}>+</Button>
                             </div>
-                            <Button variant='danger'>Remove</Button>
+                            <Button onClick={() => removeFromCart(id)} variant='danger'>Remove</Button>
                         </div>}
                 </div>
             </ Card.Body>
